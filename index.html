@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estudio UML - Diagramas de Clases</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0f0f1a;
+      color: #e0e0e0;
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1a1a3e, #2d2d6b);
+      padding: 30px 20px;
+      text-align: center;
+      border-bottom: 3px solid #4a90d9;
+    }
+
+    header h1 { font-size: 2rem; color: #4a90d9; }
+    header p { color: #aaa; margin-top: 6px; }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      background: #1a1a2e;
+      border-bottom: 2px solid #2a2a4e;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .tab {
+      padding: 14px 20px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      color: #888;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+      user-select: none;
+    }
+
+    .tab:hover { color: #4a90d9; background: #16162a; }
+    .tab.active { color: #4a90d9; border-bottom-color: #4a90d9; background: #16162a; }
+
+    .content { display: none; padding: 30px 20px; max-width: 1000px; margin: 0 auto; }
+    .content.active { display: block; }
+
+    h2 { color: #4a90d9; font-size: 1.5rem; margin-bottom: 16px; }
+    h3 { color: #7fc4fd; font-size: 1.1rem; margin: 20px 0 10px; }
+
+    .card {
+      background: #1a1a2e;
+      border: 1px solid #2a2a4e;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .card.green  { border-left: 4px solid #4caf50; }
+    .card.blue   { border-left: 4px solid #4a90d9; }
+    .card.orange { border-left: 4px solid #ff9800; }
+    .card.red    { border-left: 4px solid #f44336; }
+    .card.purple { border-left: 4px solid #9c27b0; }
+    .card.yellow { border-left: 4px solid #ffeb3b; }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      margin-right: 6px;
+    }
+
+    .badge-green  { background: #1b5e20; color: #a5d6a7; }
+    .badge-blue   { background: #0d47a1; color: #90caf9; }
+    .badge-orange { background: #e65100; color: #ffcc80; }
+    .badge-red    { background: #b71c1c; color: #ef9a9a; }
+    .badge-purple { background: #4a148c; color: #ce93d8; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+      font-size: 0.95rem;
+    }
+
+    th {
+      background: #2a2a4e;
+      color: #4a90d9;
+      padding: 10px 14px;
+      text-align: left;
+    }
+
+    td { padding: 10px 14px; border-bottom: 1px solid #2a2a4e; }
+    tr:hover td { background: #16162a; }
+
+    .uml-box {
+      font-family: monospace;
+      background: #0d0d1a;
+      border: 2px solid #2a2a4e;
+      border-radius: 8px;
+      display: inline-block;
+      min-width: 220px;
+      margin: 10px;
+      overflow: hidden;
+    }
+
+    .uml-header {
+      background: #2a2a4e;
+      text-align: center;
+      padding: 8px 14px;
+      font-weight: bold;
+      color: #fff;
+      font-size: 0.95rem;
+    }
+
+    .uml-header.abstract { font-style: italic; color: #90caf9; }
+
+    .uml-section {
+      padding: 8px 14px;
+      border-top: 1px solid #2a2a4e;
+      font-size: 0.88rem;
+      line-height: 1.8;
+    }
+
+    .attr { color: #ef9a9a; }
+    .method { color: #a5d6a7; }
+    .protected { color: #ffcc80; }
+
+    .relation-demo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 10px 0;
+      flex-wrap: wrap;
+    }
+
+    .rel-line {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 1.2rem;
+      color: #fff;
+      min-width: 120px;
+    }
+
+    .tip {
+      background: #1a2a1a;
+      border: 1px solid #2d5a2d;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 12px 0;
+      font-size: 0.93rem;
+      color: #a5d6a7;
+    }
+
+    .tip::before { content: "💡 "; }
+
+    .warning {
+      background: #2a1a1a;
+      border: 1px solid #5a2d2d;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 12px 0;
+      font-size: 0.93rem;
+      color: #ef9a9a;
+    }
+
+    .warning::before { content: "⚠️ "; }
+
+    .steps {
+      counter-reset: step;
+      list-style: none;
+      padding: 0;
+    }
+
+    .steps li {
+      counter-increment: step;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .steps li::before {
+      content: counter(step);
+      background: #4a90d9;
+      color: #fff;
+      font-weight: bold;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 0.9rem;
+    }
+
+    /* QUIZ */
+    .quiz-question {
+      background: #1a1a2e;
+      border: 1px solid #2a2a4e;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .quiz-question p { margin-bottom: 14px; font-weight: bold; color: #fff; }
+
+    .quiz-option {
+      display: block;
+      padding: 10px 16px;
+      margin: 6px 0;
+      background: #16162a;
+      border: 1px solid #2a2a4e;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: #ccc;
+      font-size: 0.93rem;
+    }
+
+    .quiz-option:hover { border-color: #4a90d9; color: #fff; background: #1e1e3a; }
+    .quiz-option.correct { background: #1b5e20; border-color: #4caf50; color: #a5d6a7; }
+    .quiz-option.wrong { background: #b71c1c; border-color: #f44336; color: #ef9a9a; }
+
+    .quiz-feedback {
+      margin-top: 10px;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      display: none;
+    }
+
+    .quiz-feedback.show { display: block; }
+    .quiz-feedback.ok { background: #1b5e20; color: #a5d6a7; }
+    .quiz-feedback.fail { background: #b71c1c; color: #ef9a9a; }
+
+    .score-box {
+      text-align: center;
+      padding: 20px;
+      background: #1a1a2e;
+      border-radius: 10px;
+      margin-top: 20px;
+      display: none;
+    }
+
+    .score-box.show { display: block; }
+    .score-num { font-size: 3rem; font-weight: bold; color: #4a90d9; }
+
+    code {
+      background: #0d0d1a;
+      border: 1px solid #2a2a4e;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-family: monospace;
+      color: #90caf9;
+      font-size: 0.9rem;
+    }
+
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media(max-width: 600px) { .grid2 { grid-template-columns: 1fr; } }
+
+    .big-symbol {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #4a90d9;
+      margin-right: 8px;
+    }
+
+    .progress-bar {
+      background: #2a2a4e;
+      border-radius: 10px;
+      height: 8px;
+      margin-top: 8px;
+    }
+
+    .progress-fill {
+      background: linear-gradient(90deg, #4a90d9, #7fc4fd);
+      border-radius: 10px;
+      height: 100%;
+      transition: width 0.4s;
+    }
+
+    ul { padding-left: 20px; }
+    ul li { margin: 6px 0; }
+
+    .cheatsheet-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 0;
+      border-bottom: 1px solid #2a2a4e;
+    }
+
+    .cheatsheet-symbol {
+      font-size: 1.4rem;
+      min-width: 60px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>UML — Diagramas de Clases</h1>
+  <p>Entornos de Desarrollo · Examen mañana · Estudia esto y lo clavas</p>
+</header>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('basico')">1. Lo básico</div>
+  <div class="tab" onclick="showTab('clase')">2. La clase</div>
+  <div class="tab" onclick="showTab('relaciones')">3. Relaciones</div>
+  <div class="tab" onclick="showTab('proceso')">4. Proceso</div>
+  <div class="tab" onclick="showTab('cheatsheet')">5. Chuleta</div>
+  <div class="tab" onclick="showTab('quiz')">6. Test</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 1: LO BÁSICO -->
+<!-- ============================================================ -->
+<div id="basico" class="content active">
+  <h2>¿Qué es UML y para qué sirve?</h2>
+
+  <div class="card blue">
+    <h3>UML (Unified Modeling Language)</h3>
+    <p>Es un <strong>lenguaje gráfico</strong> para diseñar software <em>antes</em> de programarlo. No es un lenguaje de programación — sirve para <strong>describir la estructura del sistema</strong> mediante diagramas.</p>
+    <br>
+    <p>Su objetivo: que todo el equipo entienda cómo va a ser el software antes de escribir código.</p>
+  </div>
+
+  <h3>Tipos de diagramas UML</h3>
+  <div class="grid2">
+    <div class="card green">
+      <strong>Estructurales</strong> — el QUÉ
+      <ul style="margin-top:8px">
+        <li>Diagrama de <strong>clases</strong> ← el más importante</li>
+        <li>Diagrama de objetos</li>
+        <li>Diagrama de componentes</li>
+        <li>Diagrama de paquetes</li>
+      </ul>
+    </div>
+    <div class="card orange">
+      <strong>De comportamiento</strong> — el CÓMO
+      <ul style="margin-top:8px">
+        <li>Diagrama de casos de uso</li>
+        <li>Diagrama de secuencia</li>
+        <li>Diagrama de actividades</li>
+        <li>Diagrama de estados</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tip">El diagrama de clases es el MÁS IMPORTANTE porque muestra la base estructural de la aplicación.</div>
+
+  <h3>¿Qué es un Diagrama de Clases?</h3>
+  <div class="card">
+    <p>Representa la <strong>estructura estática</strong> del sistema orientado a objetos. Muestra:</p>
+    <ul style="margin-top:10px">
+      <li>Las <strong>clases</strong> del sistema</li>
+      <li>Sus <strong>atributos</strong> y <strong>métodos</strong></li>
+      <li>Las <strong>relaciones</strong> entre ellas</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 2: LA CLASE -->
+<!-- ============================================================ -->
+<div id="clase" class="content">
+  <h2>La Clase — Estructura</h2>
+
+  <p>Una clase se dibuja como un rectángulo dividido en <strong>3 zonas</strong>:</p>
+  <br>
+
+  <div style="display:flex; flex-wrap:wrap; gap:20px; align-items:flex-start;">
+    <div class="uml-box">
+      <div class="uml-header">NombreClase</div>
+      <div class="uml-section">
+        <div class="attr">- atributo1: tipo</div>
+        <div class="attr">- atributo2: tipo</div>
+        <div class="protected"># atributo3: tipo</div>
+      </div>
+      <div class="uml-section">
+        <div class="method">+ metodo1(): void</div>
+        <div class="method">+ metodo2(): String</div>
+      </div>
+    </div>
+
+    <div style="flex:1; min-width:220px;">
+      <div class="card green">
+        <strong>Zona 1 — Nombre</strong><br>
+        El nombre de la clase. En negrita, con mayúscula inicial.
+      </div>
+      <div class="card blue">
+        <strong>Zona 2 — Atributos</strong><br>
+        Los datos/propiedades. Se pone la visibilidad antes.
+      </div>
+      <div class="card orange">
+        <strong>Zona 3 — Métodos</strong><br>
+        Las acciones que puede hacer. Misma visibilidad.
+      </div>
+    </div>
+  </div>
+
+  <h3>Visibilidad</h3>
+  <table>
+    <tr><th>Símbolo</th><th>Nombre</th><th>Quién puede acceder</th></tr>
+    <tr><td><code>+</code></td><td><strong>Público</strong></td><td>Cualquier clase</td></tr>
+    <tr><td><code>-</code></td><td><strong>Privado</strong></td><td>Solo la misma clase</td></tr>
+    <tr><td><code>#</code></td><td><strong>Protegido</strong></td><td>La clase y sus subclases (herencia)</td></tr>
+  </table>
+
+  <div class="tip">Los atributos suelen ser <strong>privados</strong> (-) y los métodos <strong>públicos</strong> (+). Es la encapsulación.</div>
+
+  <h3>Formato de atributos y métodos</h3>
+  <div class="card">
+    <p><strong>Atributo:</strong> <code>visibilidad nombre: tipo</code></p>
+    <p style="margin-top:6px; color:#888">Ej: <code class="attr">- precio: float</code></p>
+    <br>
+    <p><strong>Método:</strong> <code>visibilidad nombre(parametros): tipoRetorno</code></p>
+    <p style="margin-top:6px; color:#888">Ej: <code class="method">+ comprar(v: Videojuego): void</code></p>
+  </div>
+
+  <h3>Getters, Setters y Constructores</h3>
+  <div class="warning">Los getters, setters y constructores <strong>NO se ponen</strong> en el diagrama (salvo que tengan relevancia especial).</div>
+
+  <div class="grid2">
+    <div class="card" style="font-family:monospace; font-size:0.88rem;">
+      <div style="color:#888">// Getter</div>
+      <div class="method">+ getNombre(): String</div>
+      <br>
+      <div style="color:#888">// Setter</div>
+      <div class="method">+ setNombre(n: String): void</div>
+    </div>
+    <div class="card">
+      <p>El patrón es simple:</p>
+      <ul style="margin-top:8px">
+        <li><strong>getter</strong> = get + NombreAtributo</li>
+        <li><strong>setter</strong> = set + NombreAtributo</li>
+      </ul>
+      <p style="margin-top:8px; color:#888">Pero recuerda: no los pones en el diagrama.</p>
+    </div>
+  </div>
+
+  <h3>Clase Abstracta</h3>
+  <div class="card purple">
+    <p>Una clase que <strong>no se puede instanciar</strong> directamente. Solo sirve de base para otras clases.</p>
+    <p style="margin-top:10px">Se marca con <code>&lt;&lt;abstract&gt;&gt;</code> o con el nombre en <em>cursiva</em>.</p>
+    <br>
+    <div class="uml-box" style="margin:0">
+      <div class="uml-header abstract">&lt;&lt;abstract&gt;&gt;<br>Usuario</div>
+      <div class="uml-section">
+        <div class="protected"># nombre: String</div>
+        <div class="protected"># email: String</div>
+      </div>
+      <div class="uml-section">
+        <div class="method">+ login(): void</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Atributos/métodos estáticos</h3>
+  <div class="card">
+    <p>Los atributos o métodos estáticos se representan <strong>subrayando</strong> su nombre.</p>
+    <p style="margin-top:8px; color:#888">Son los que pertenecen a la clase, no a cada objeto.</p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 3: RELACIONES -->
+<!-- ============================================================ -->
+<div id="relaciones" class="content">
+  <h2>Relaciones entre Clases</h2>
+
+  <!-- ASOCIACION -->
+  <div class="card blue">
+    <h3>1. Asociación — "se relaciona con"</h3>
+    <div class="relation-demo">
+      <div class="uml-box" style="min-width:100px">
+        <div class="uml-header">Nave</div>
+        <div class="uml-section"></div>
+      </div>
+      <div class="rel-line">────────</div>
+      <div style="font-size:0.9rem; color:#888">1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1</div>
+      <div class="uml-box" style="min-width:100px">
+        <div class="uml-header">Piloto</div>
+        <div class="uml-section"></div>
+      </div>
+    </div>
+    <ul style="margin-top:8px">
+      <li>Línea continua simple entre las dos clases</li>
+      <li>La más común. Representa cualquier relación semántica</li>
+      <li>Puede ser <strong>bidireccional</strong> (línea) o <strong>unidireccional</strong> (flecha →)</li>
+      <li>Se añaden las <strong>multiplicidades</strong> en los extremos</li>
+    </ul>
+  </div>
+
+  <!-- HERENCIA -->
+  <div class="card green">
+    <h3>2. Herencia — "es un tipo de"</h3>
+    <div class="relation-demo">
+      <div class="uml-box" style="min-width:100px">
+        <div class="uml-header">Perro</div>
+        <div class="uml-section"></div>
+      </div>
+      <div class="rel-line">───────▷</div>
+      <div class="uml-box" style="min-width:100px">
+        <div class="uml-header">Animal</div>
+        <div class="uml-section"></div>
+      </div>
+    </div>
+    <ul style="margin-top:8px">
+      <li>Línea con <strong>flecha de triángulo hueco</strong> apuntando a la clase padre</li>
+      <li>Clave: <em>"Perro ES UN Animal"</em></li>
+      <li>La subclase hereda todos los atributos y métodos del padre</li>
+    </ul>
+    <div class="tip" style="margin-top:10px">En el examen: si ves que dos clases comparten atributos → piensa en herencia</div>
+  </div>
+
+  <!-- AGREGACION -->
+  <div class="card orange">
+    <h3>3. Agregación — "tiene un" (independiente)</h3>
+    <div class="relation-demo">
+      <div class="uml-box" style="min-width:100px">
+        <div class="uml-header">Nave</div>
+        <div class="uml-section"></div>
+      </div>
+      <div class="rel-line">◇───────</div>
+      <div class="uml-box" style="min-width:100px">
+        <div class="uml-header">Propulsor</div>
+        <div class="uml-section"></div>
+      </div>
+    </div>
+    <ul style="margin-top:8px">
+      <li><strong>Rombo vacío (◇)</strong> en la clase contenedora</li>
+      <li>La parte <strong>puede existir sin el todo</strong></li>
+      <li>Clave: <em>"la Nave TIENE UN Propulsor" pero el Propulsor existe solo</em></li>
+      <li>Ejemplo: Equipo tiene Jugadores, pero los Jugadores existen sin el equipo</li>
+    </ul>
+  </div>
+
+  <!-- COMPOSICION -->
+  <div class="card red">
+    <h3>4. Composición — "tiene un" (dependiente)</h3>
+    <div class="relation-demo">
+      <div class="uml-box" style="min-width:100px">
+        <div class="uml-header">Frase</div>
+        <div class="uml-section"></div>
+      </div>
+      <div class="rel-line">◆───────</div>
+      <div class="uml-box" style="min-width:100px">
+        <div class="uml-header">Palabra</div>
+        <div class="uml-section"></div>
+      </div>
+    </div>
+    <ul style="margin-top:8px">
+      <li><strong>Rombo relleno (◆)</strong> en la clase contenedora</li>
+      <li>La parte <strong>NO puede existir sin el todo</strong></li>
+      <li>Si se destruye el contenedor, se destruyen las partes</li>
+      <li>Ejemplo: Capítulo no existe sin Libro, Habitación no existe sin Casa</li>
+    </ul>
+  </div>
+
+  <!-- DEPENDENCIA -->
+  <div class="card purple">
+    <h3>5. Dependencia — "usa temporalmente"</h3>
+    <div class="relation-demo">
+      <div class="uml-box" style="min-width:120px">
+        <div class="uml-header">GestorPagos</div>
+        <div class="uml-section"></div>
+      </div>
+      <div class="rel-line">- - - - →</div>
+      <div class="uml-box" style="min-width:120px">
+        <div class="uml-header">PasarelaPagos</div>
+        <div class="uml-section"></div>
+      </div>
+    </div>
+    <ul style="margin-top:8px">
+      <li><strong>Línea discontinua con flecha</strong></li>
+      <li>Una clase usa temporalmente a otra (métodos, parámetros)</li>
+      <li>No es una relación permanente</li>
+      <li>Típico con librerías externas</li>
+    </ul>
+  </div>
+
+  <h3>Multiplicidades — ¿Cuántos?</h3>
+  <table>
+    <tr><th>Notación</th><th>Significado</th><th>Ejemplo</th></tr>
+    <tr><td><code>1</code></td><td>Exactamente uno</td><td>Un pedido tiene 1 cliente</td></tr>
+    <tr><td><code>0..1</code></td><td>Cero o uno</td><td>Un empleado puede tener 0 o 1 jefe</td></tr>
+    <tr><td><code>0..*</code> o <code>*</code></td><td>Cero o varios</td><td>Un cliente tiene 0 o más pedidos</td></tr>
+    <tr><td><code>1..*</code></td><td>Uno o varios (al menos uno)</td><td>Un módulo tiene 1 o más profesores</td></tr>
+    <tr><td><code>N..M</code></td><td>Desde N hasta M</td><td>Un equipo tiene 5..11 jugadores</td></tr>
+  </table>
+
+  <div class="tip">Las multiplicidades se leen así: Alumno <code>0..*</code> — matrícula — <code>1..*</code> Módulo = "Un alumno puede matricularse en 0 o más módulos, y un módulo tiene al menos 1 alumno"</div>
+
+  <h3>Agregación vs Composición — Truco</h3>
+  <div class="card yellow">
+    <p>Hazte esta pregunta: <strong>"¿Si borro el 'todo', las 'partes' siguen existiendo?"</strong></p>
+    <br>
+    <table>
+      <tr><th>Situación</th><th>Relación</th></tr>
+      <tr><td>Si cierro el Centro Comercial → los Clientes siguen</td><td>◇ Agregación</td></tr>
+      <tr><td>Si destruyo el Libro → los Capítulos desaparecen</td><td>◆ Composición</td></tr>
+      <tr><td>Si borro al Usuario → su Biblioteca desaparece</td><td>◆ Composición</td></tr>
+      <tr><td>Si borro la Biblioteca → los Videojuegos siguen</td><td>◇ Agregación</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 4: PROCESO -->
+<!-- ============================================================ -->
+<div id="proceso" class="content">
+  <h2>Proceso para hacer un diagrama de clases</h2>
+
+  <div class="card blue">
+    <p>Cuando te dan un enunciado en el examen, sigue siempre este orden:</p>
+  </div>
+
+  <ol class="steps">
+    <li>
+      <div>
+        <strong>Identificar las clases</strong>
+        <p style="color:#aaa; margin-top:4px">Busca los <strong>sustantivos</strong> del enunciado. Cada entidad importante = una clase.<br>
+        Ejemplo: "usuarios compran videojuegos del catálogo" → Usuario, Videojuego, Catálogo</p>
+      </div>
+    </li>
+    <li>
+      <div>
+        <strong>Definir atributos y métodos de cada clase</strong>
+        <p style="color:#aaa; margin-top:4px">Para cada clase piensa: ¿qué datos tiene? → atributos. ¿qué puede hacer? → métodos.<br>
+        Atributos privados (-), métodos públicos (+).</p>
+      </div>
+    </li>
+    <li>
+      <div>
+        <strong>Identificar las relaciones</strong>
+        <p style="color:#aaa; margin-top:4px">Para cada par de clases pregúntate qué relación tienen:<br>
+        ¿Una hereda de la otra? ¿Una contiene a la otra? ¿Se usan mutuamente?</p>
+      </div>
+    </li>
+    <li>
+      <div>
+        <strong>Añadir multiplicidades</strong>
+        <p style="color:#aaa; margin-top:4px">En cada relación, ¿cuántos objetos de cada lado pueden participar?<br>
+        1:1, 1:0..*, etc.</p>
+      </div>
+    </li>
+    <li>
+      <div>
+        <strong>Conectar y dibujar</strong>
+        <p style="color:#aaa; margin-top:4px">Dibuja las clases y conecta con el tipo de línea correcto según la relación.</p>
+      </div>
+    </li>
+  </ol>
+
+  <h3>Ejemplo resuelto — NébulaPlay</h3>
+
+  <div class="card">
+    <p><strong>Enunciado:</strong> Plataforma de videojuegos donde usuarios registrados compran y valoran juegos, y los administradores gestionan el catálogo.</p>
+    <br>
+    <p><strong>Paso 1 — Sustantivos:</strong></p>
+    <p style="margin-top:6px; color:#90caf9">Usuario, UsuarioRegistrado, Administrador, Videojuego, Catálogo, Biblioteca, Valoración, Compra</p>
+  </div>
+
+  <div class="card">
+    <p><strong>Paso 2 — Relaciones identificadas:</strong></p>
+    <table style="margin-top:10px">
+      <tr><th>Relación</th><th>Tipo</th><th>Por qué</th></tr>
+      <tr><td>UsuarioRegistrado → Usuario</td><td>Herencia</td><td>"es un tipo de" usuario</td></tr>
+      <tr><td>Administrador → Usuario</td><td>Herencia</td><td>"es un tipo de" usuario</td></tr>
+      <tr><td>UsuarioRegistrado ◆ Biblioteca</td><td>Composición</td><td>La biblioteca no existe sin el usuario</td></tr>
+      <tr><td>Biblioteca ◇ Videojuego</td><td>Agregación</td><td>El videojuego existe independientemente</td></tr>
+      <tr><td>Catálogo ◇ Videojuego</td><td>Agregación</td><td>El videojuego existe independientemente</td></tr>
+      <tr><td>UsuarioRegistrado — Valoracion</td><td>Asociación 1:0..*</td><td>Un usuario hace 0 o más valoraciones</td></tr>
+      <tr><td>Valoracion — Videojuego</td><td>Asociación 0..*:1</td><td>Una valoración es de 1 videojuego</td></tr>
+      <tr><td>UsuarioRegistrado — Compra</td><td>Asociación 1:0..*</td><td>Un usuario hace 0 o más compras</td></tr>
+      <tr><td>Compra — Videojuego</td><td>Asociación 0..*:1</td><td>Una compra es de 1 videojuego</td></tr>
+    </table>
+  </div>
+
+  <h3>Preguntas clave para identificar relaciones</h3>
+  <div class="grid2">
+    <div class="card">
+      <p>¿A es un tipo de B?</p>
+      <p style="color:#4caf50; margin-top:6px">→ Herencia A → B</p>
+    </div>
+    <div class="card">
+      <p>¿A tiene un B, pero B puede existir solo?</p>
+      <p style="color:#ff9800; margin-top:6px">→ Agregación A ◇ B</p>
+    </div>
+    <div class="card">
+      <p>¿A tiene un B, y B no existe sin A?</p>
+      <p style="color:#f44336; margin-top:6px">→ Composición A ◆ B</p>
+    </div>
+    <div class="card">
+      <p>¿A y B se relacionan de alguna manera?</p>
+      <p style="color:#4a90d9; margin-top:6px">→ Asociación A — B</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 5: CHULETA -->
+<!-- ============================================================ -->
+<div id="cheatsheet" class="content">
+  <h2>Chuleta Rápida — Para repasar antes del examen</h2>
+
+  <h3>Tipos de relaciones</h3>
+  <div class="card">
+    <div class="cheatsheet-row">
+      <div class="cheatsheet-symbol">────</div>
+      <div><strong>Asociación</strong> — línea simple. "Se relacionan". La más genérica.</div>
+    </div>
+    <div class="cheatsheet-row">
+      <div class="cheatsheet-symbol">───▷</div>
+      <div><strong>Herencia</strong> — flecha triángulo hueco. "Es un tipo de". Va hacia la clase padre.</div>
+    </div>
+    <div class="cheatsheet-row">
+      <div class="cheatsheet-symbol">◇───</div>
+      <div><strong>Agregación</strong> — rombo vacío. "Tiene un (independiente)". Rombo en el contenedor.</div>
+    </div>
+    <div class="cheatsheet-row">
+      <div class="cheatsheet-symbol">◆───</div>
+      <div><strong>Composición</strong> — rombo relleno. "Tiene un (dependiente)". Sin el todo no existe la parte.</div>
+    </div>
+    <div class="cheatsheet-row">
+      <div class="cheatsheet-symbol" style="font-size:1rem">- - →</div>
+      <div><strong>Dependencia</strong> — línea discontinua. "Usa temporalmente". Librerías externas.</div>
+    </div>
+  </div>
+
+  <h3>Visibilidad</h3>
+  <div class="card">
+    <div class="cheatsheet-row">
+      <div class="cheatsheet-symbol" style="color:#4caf50">+</div>
+      <div><strong>Público</strong> — accesible desde cualquier clase</div>
+    </div>
+    <div class="cheatsheet-row">
+      <div class="cheatsheet-symbol" style="color:#f44336">-</div>
+      <div><strong>Privado</strong> — solo dentro de la misma clase</div>
+    </div>
+    <div class="cheatsheet-row">
+      <div class="cheatsheet-symbol" style="color:#ff9800">#</div>
+      <div><strong>Protegido</strong> — clase propia y subclases</div>
+    </div>
+  </div>
+
+  <h3>Multiplicidades</h3>
+  <div class="card">
+    <div class="cheatsheet-row"><div class="cheatsheet-symbol"><code>1</code></div><div>Exactamente uno</div></div>
+    <div class="cheatsheet-row"><div class="cheatsheet-symbol"><code>0..1</code></div><div>Cero o uno</div></div>
+    <div class="cheatsheet-row"><div class="cheatsheet-symbol"><code>0..*</code></div><div>Cero o muchos</div></div>
+    <div class="cheatsheet-row"><div class="cheatsheet-symbol"><code>1..*</code></div><div>Uno o muchos (al menos uno)</div></div>
+  </div>
+
+  <h3>Estructura de una clase</h3>
+  <div style="display:flex; flex-wrap:wrap; gap:20px; margin-top:10px">
+    <div class="uml-box">
+      <div class="uml-header">Videojuego</div>
+      <div class="uml-section">
+        <div class="attr">- id: int</div>
+        <div class="attr">- titulo: String</div>
+        <div class="attr">- precio: float</div>
+      </div>
+      <div class="uml-section">
+        <div class="method">+ getInfo(): String</div>
+        <div class="method">+ getValoracionMedia(): float</div>
+      </div>
+    </div>
+    <div class="uml-box">
+      <div class="uml-header abstract">&lt;&lt;abstract&gt;&gt;<br>Usuario</div>
+      <div class="uml-section">
+        <div class="protected"># nombre: String</div>
+        <div class="protected"># email: String</div>
+      </div>
+      <div class="uml-section">
+        <div class="method">+ login(): void</div>
+        <div class="method">+ logout(): void</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Los 3 pasos del proceso</h3>
+  <div class="card green">
+    <p><strong>1.</strong> Busca los <strong>sustantivos</strong> → son las clases</p>
+    <p style="margin-top:8px"><strong>2.</strong> Define <strong>atributos</strong> (datos) y <strong>métodos</strong> (acciones) para cada clase</p>
+    <p style="margin-top:8px"><strong>3.</strong> Identifica las <strong>relaciones</strong> entre clases y añade multiplicidades</p>
+  </div>
+
+  <div class="warning">
+    NO poner en el diagrama: getters, setters, constructores.<br>
+    SÍ poner: métodos relevantes de negocio (+comprar, +valorar, etc.)
+  </div>
+
+  <div class="tip">
+    Truco herencia: <em>"¿Un X es un Y?"</em> → Si sí, hay herencia.<br>
+    Truco composición: <em>"¿Si borro A, B también desaparece?"</em> → Si sí, composición.
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 6: QUIZ -->
+<!-- ============================================================ -->
+<div id="quiz" class="content">
+  <h2>Test de repaso</h2>
+  <p style="color:#aaa; margin-bottom:20px">Haz clic en la respuesta. Se corrige al momento.</p>
+
+  <div id="quiz-container">
+
+    <div class="quiz-question" id="q1">
+      <p>1. ¿Qué tipo de relación usarías si "Perro" deriva de "Animal"?</p>
+      <label class="quiz-option" onclick="answer(this, 'q1', false)">Asociación</label>
+      <label class="quiz-option" onclick="answer(this, 'q1', true)">Herencia</label>
+      <label class="quiz-option" onclick="answer(this, 'q1', false)">Composición</label>
+      <label class="quiz-option" onclick="answer(this, 'q1', false)">Dependencia</label>
+      <div class="quiz-feedback" id="q1-fb">Correcto. Perro ES UN Animal → Herencia. Línea con triángulo hueco apuntando a Animal.</div>
+    </div>
+
+    <div class="quiz-question" id="q2">
+      <p>2. Una "Biblioteca" pertenece a un "UsuarioRegistrado" y no puede existir sin él. ¿Qué relación es?</p>
+      <label class="quiz-option" onclick="answer(this, 'q2', false)">Agregación</label>
+      <label class="quiz-option" onclick="answer(this, 'q2', true)">Composición</label>
+      <label class="quiz-option" onclick="answer(this, 'q2', false)">Herencia</label>
+      <label class="quiz-option" onclick="answer(this, 'q2', false)">Asociación</label>
+      <div class="quiz-feedback" id="q2-fb">Correcto. La biblioteca NO existe sin el usuario → Composición (rombo relleno ◆).</div>
+    </div>
+
+    <div class="quiz-question" id="q3">
+      <p>3. ¿Qué símbolo de visibilidad se usa para un atributo privado?</p>
+      <label class="quiz-option" onclick="answer(this, 'q3', false)">+</label>
+      <label class="quiz-option" onclick="answer(this, 'q3', true)">-</label>
+      <label class="quiz-option" onclick="answer(this, 'q3', false)">#</label>
+      <label class="quiz-option" onclick="answer(this, 'q3', false)">~</label>
+      <div class="quiz-feedback" id="q3-fb">Correcto. (-) privado, (+) público, (#) protegido.</div>
+    </div>
+
+    <div class="quiz-question" id="q4">
+      <p>4. Un "Catálogo" contiene "Videojuegos", pero los videojuegos pueden existir sin el catálogo. ¿Qué relación es?</p>
+      <label class="quiz-option" onclick="answer(this, 'q4', false)">Composición</label>
+      <label class="quiz-option" onclick="answer(this, 'q4', true)">Agregación</label>
+      <label class="quiz-option" onclick="answer(this, 'q4', false)">Herencia</label>
+      <label class="quiz-option" onclick="answer(this, 'q4', false)">Dependencia</label>
+      <div class="quiz-feedback" id="q4-fb">Correcto. Los videojuegos pueden existir solos → Agregación (rombo vacío ◇).</div>
+    </div>
+
+    <div class="quiz-question" id="q5">
+      <p>5. ¿Qué significa la multiplicidad "1..*"?</p>
+      <label class="quiz-option" onclick="answer(this, 'q5', false)">Exactamente uno</label>
+      <label class="quiz-option" onclick="answer(this, 'q5', false)">Cero o varios</label>
+      <label class="quiz-option" onclick="answer(this, 'q5', true)">Uno o varios (al menos uno)</label>
+      <label class="quiz-option" onclick="answer(this, 'q5', false)">Cero o uno</label>
+      <div class="quiz-feedback" id="q5-fb">Correcto. 1..* = al menos uno, puede haber más. Ej: Un módulo tiene 1 o más profesores.</div>
+    </div>
+
+    <div class="quiz-question" id="q6">
+      <p>6. ¿Cuál de estas cosas NO se suele poner en un diagrama de clases?</p>
+      <label class="quiz-option" onclick="answer(this, 'q6', false)">Atributos privados</label>
+      <label class="quiz-option" onclick="answer(this, 'q6', true)">Getters y setters</label>
+      <label class="quiz-option" onclick="answer(this, 'q6', false)">Métodos públicos</label>
+      <label class="quiz-option" onclick="answer(this, 'q6', false)">Nombre de la clase</label>
+      <div class="quiz-feedback" id="q6-fb">Correcto. Los getters, setters y constructores NO se ponen salvo que tengan relevancia especial.</div>
+    </div>
+
+    <div class="quiz-question" id="q7">
+      <p>7. ¿Cómo se representa la dependencia en UML?</p>
+      <label class="quiz-option" onclick="answer(this, 'q7', false)">Línea continua con rombo</label>
+      <label class="quiz-option" onclick="answer(this, 'q7', false)">Línea con triángulo hueco</label>
+      <label class="quiz-option" onclick="answer(this, 'q7', true)">Línea discontinua con flecha</label>
+      <label class="quiz-option" onclick="answer(this, 'q7', false)">Línea continua simple</label>
+      <div class="quiz-feedback" id="q7-fb">Correcto. La dependencia es una línea discontinua (- - - →). Indica uso temporal de otra clase.</div>
+    </div>
+
+    <div class="quiz-question" id="q8">
+      <p>8. Tienes las clases "UsuarioRegistrado" y "Administrador". Ambas tienen nombre, email y contraseña. ¿Qué harías?</p>
+      <label class="quiz-option" onclick="answer(this, 'q8', false)">Repetir los atributos en las dos clases</label>
+      <label class="quiz-option" onclick="answer(this, 'q8', true)">Crear una clase "Usuario" base y usar herencia</label>
+      <label class="quiz-option" onclick="answer(this, 'q8', false)">Usar composición entre las dos</label>
+      <label class="quiz-option" onclick="answer(this, 'q8', false)">No poner esos atributos</label>
+      <div class="quiz-feedback" id="q8-fb">Correcto. Cuando dos clases comparten atributos, se crea una clase padre con esos atributos comunes y las otras heredan de ella.</div>
+    </div>
+
+    <div class="quiz-question" id="q9">
+      <p>9. ¿Cuál es el primer paso para dibujar un diagrama de clases a partir de un enunciado?</p>
+      <label class="quiz-option" onclick="answer(this, 'q9', false)">Dibujar las relaciones</label>
+      <label class="quiz-option" onclick="answer(this, 'q9', false)">Definir los métodos</label>
+      <label class="quiz-option" onclick="answer(this, 'q9', true)">Identificar las clases buscando los sustantivos</label>
+      <label class="quiz-option" onclick="answer(this, 'q9', false)">Poner las multiplicidades</label>
+      <div class="quiz-feedback" id="q9-fb">Correcto. Siempre: 1) Clases (sustantivos) → 2) Atributos y métodos → 3) Relaciones.</div>
+    </div>
+
+    <div class="quiz-question" id="q10">
+      <p>10. ¿Qué símbolo usa el atributo protegido, accesible desde la clase y sus subclases?</p>
+      <label class="quiz-option" onclick="answer(this, 'q10', false)">+</label>
+      <label class="quiz-option" onclick="answer(this, 'q10', false)">-</label>
+      <label class="quiz-option" onclick="answer(this, 'q10', true)">#</label>
+      <label class="quiz-option" onclick="answer(this, 'q10', false)">~</label>
+      <div class="quiz-feedback" id="q10-fb">Correcto. (#) protegido = accesible desde la clase y sus subclases (herencia). Muy útil en clases abstractas.</div>
+    </div>
+
+  </div>
+
+  <div class="score-box" id="score-box">
+    <p style="color:#aaa; margin-bottom:10px">Resultado final</p>
+    <div class="score-num" id="score-num">0/10</div>
+    <p id="score-msg" style="margin-top:10px; color:#aaa"></p>
+    <div class="progress-bar" style="margin-top:14px">
+      <div class="progress-fill" id="score-bar" style="width:0%"></div>
+    </div>
+    <button onclick="resetQuiz()" style="margin-top:20px; padding:10px 24px; background:#4a90d9; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:1rem;">Repetir test</button>
+  </div>
+</div>
+
+<script>
+  function showTab(name) {
+    document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(name).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  let answered = {};
+  let score = 0;
+  const total = 10;
+
+  function answer(el, qid, correct) {
+    if (answered[qid]) return;
+    answered[qid] = true;
+
+    const fb = document.getElementById(qid + '-fb');
+    if (correct) {
+      el.classList.add('correct');
+      fb.classList.add('ok', 'show');
+      fb.textContent = '✓ ' + fb.textContent;
+      score++;
+    } else {
+      el.classList.add('wrong');
+      fb.classList.add('fail', 'show');
+      fb.textContent = '✗ Incorrecto. ' + fb.textContent;
+      // Mark correct answer
+      const options = el.parentElement.querySelectorAll('.quiz-option');
+      options.forEach(opt => {
+        opt.onclick = null;
+      });
+    }
+
+    if (Object.keys(answered).length === total) {
+      showScore();
+    }
+  }
+
+  function showScore() {
+    const box = document.getElementById('score-box');
+    const num = document.getElementById('score-num');
+    const msg = document.getElementById('score-msg');
+    const bar = document.getElementById('score-bar');
+
+    box.classList.add('show');
+    num.textContent = score + '/' + total;
+    bar.style.width = (score / total * 100) + '%';
+
+    if (score === total) {
+      msg.textContent = '¡Perfecto! Lo tienes todo controlado. A dormir bien esta noche.';
+      num.style.color = '#4caf50';
+    } else if (score >= 7) {
+      msg.textContent = 'Muy bien. Repasa los que has fallado y ya está.';
+      num.style.color = '#ff9800';
+    } else {
+      msg.textContent = 'Repasa las secciones de Relaciones y Proceso. Vuelta a empezar.';
+      num.style.color = '#f44336';
+    }
+  }
+
+  function resetQuiz() {
+    answered = {};
+    score = 0;
+    document.querySelectorAll('.quiz-option').forEach(o => {
+      o.classList.remove('correct', 'wrong');
+      o.onclick = null;
+    });
+    document.querySelectorAll('.quiz-feedback').forEach(f => {
+      f.classList.remove('show', 'ok', 'fail');
+      f.textContent = f.textContent.replace(/^[✓✗] (Correcto\. |Incorrecto\. )/, '');
+    });
+
+    // Re-assign onclick handlers
+    const questions = [
+      ['q1', [false, true, false, false]],
+      ['q2', [false, true, false, false]],
+      ['q3', [false, true, false, false]],
+      ['q4', [false, true, false, false]],
+      ['q5', [false, false, true, false]],
+      ['q6', [false, true, false, false]],
+      ['q7', [false, false, true, false]],
+      ['q8', [false, true, false, false]],
+      ['q9', [false, false, true, false]],
+      ['q10', [false, false, true, false]],
+    ];
+
+    questions.forEach(([qid, answers]) => {
+      const opts = document.querySelectorAll('#' + qid + ' .quiz-option');
+      opts.forEach((opt, i) => {
+        opt.onclick = function() { answer(this, qid, answers[i]); };
+      });
+    });
+
+    document.getElementById('score-box').classList.remove('show');
+    window.scrollTo(0, 0);
+  }
+</script>
+
+</body>
+</html>
