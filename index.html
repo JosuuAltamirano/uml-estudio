@@ -321,6 +321,7 @@
   <div class="tab" onclick="showTab('proceso')">4. Proceso</div>
   <div class="tab" onclick="showTab('cheatsheet')">5. Chuleta</div>
   <div class="tab" onclick="showTab('quiz')">6. Test</div>
+  <div class="tab" onclick="showTab('simulacro')" style="color:#f9a825;border-bottom-color:#f9a825;">7. Simulacro</div>
 </div>
 
 <!-- ============================================================ -->
@@ -1017,7 +1018,736 @@
     document.getElementById('score-box').classList.remove('show');
     window.scrollTo(0, 0);
   }
+
+  // ============================================================
+  // SIMULACRO
+  // ============================================================
+  function reveal(id) {
+    const el = document.getElementById(id);
+    el.style.display = 'block';
+    el.previousElementSibling && el.previousElementSibling.classList.add('used');
+  }
+
+  function checkRel(btn, correct) {
+    const parent = btn.closest('.rel-card');
+    parent.querySelectorAll('.rel-btn').forEach(b => b.disabled = true);
+    if (correct) {
+      btn.style.background = '#1b5e20';
+      btn.style.borderColor = '#4caf50';
+      btn.style.color = '#a5d6a7';
+      parent.querySelector('.rel-explain').style.display = 'block';
+    } else {
+      btn.style.background = '#b71c1c';
+      btn.style.borderColor = '#f44336';
+      btn.style.color = '#ef9a9a';
+    }
+  }
 </script>
 
-</body>
-</html>
+<!-- ============================================================ -->
+<!-- TAB 7: SIMULACRO -->
+<!-- ============================================================ -->
+<div id="simulacro" class="content">
+  <h2 style="color:#f9a825;">Simulacro de Examen Práctico</h2>
+  <p style="color:#aaa; margin-bottom:20px">Simula las condiciones del examen. Escribe tus respuestas antes de ver la solución.</p>
+
+  <div class="tabs" style="position:static; margin-bottom:24px; border-radius:8px; overflow:hidden;">
+    <div class="tab active" onclick="showSim('sim-rel')" id="stab-rel">A. Relaciones</div>
+    <div class="tab" onclick="showSim('sim-1')" id="stab-1">B. RentaFácil</div>
+    <div class="tab" onclick="showSim('sim-2')" id="stab-2">C. MascotaVet</div>
+    <div class="tab" onclick="showSim('sim-lee')" id="stab-lee">D. Lee el diagrama</div>
+  </div>
+
+  <!-- ===== A: IDENTIFICA RELACIONES ===== -->
+  <div id="sim-rel">
+    <h3 style="color:#f9a825; margin-bottom:16px">A. Identifica el tipo de relación</h3>
+    <p style="color:#aaa; margin-bottom:20px">Para cada caso, elige la relación UML correcta.</p>
+
+    <style>
+      .rel-card { background:#1a1a2e; border:1px solid #2a2a4e; border-radius:10px; padding:18px; margin-bottom:14px; }
+      .rel-card p { margin-bottom:12px; color:#fff; }
+      .rel-btns { display:flex; flex-wrap:wrap; gap:8px; }
+      .rel-btn { padding:8px 14px; background:#16162a; border:1px solid #2a2a4e; border-radius:6px; color:#ccc; cursor:pointer; font-size:0.85rem; transition:all 0.2s; }
+      .rel-btn:hover:not(:disabled) { border-color:#f9a825; color:#fff; }
+      .rel-explain { display:none; margin-top:12px; padding:10px 14px; background:#1a2a1a; border:1px solid #2d5a2d; border-radius:6px; color:#a5d6a7; font-size:0.9rem; }
+    </style>
+
+    <div class="rel-card">
+      <p><strong>1.</strong> Un <em>Libro</em> tiene <em>Capítulos</em>. Si se borra el libro, los capítulos también desaparecen.</p>
+      <div class="rel-btns">
+        <button class="rel-btn" onclick="checkRel(this,false)">Asociación</button>
+        <button class="rel-btn" onclick="checkRel(this,false)">Agregación</button>
+        <button class="rel-btn" onclick="checkRel(this,true)">Composición</button>
+        <button class="rel-btn" onclick="checkRel(this,false)">Herencia</button>
+      </div>
+      <div class="rel-explain">Composición ◆ — Los capítulos no existen sin el libro. Rombo relleno en Libro.</div>
+    </div>
+
+    <div class="rel-card">
+      <p><strong>2.</strong> Un <em>Equipo</em> tiene <em>Jugadores</em>. Si se disuelve el equipo, los jugadores siguen existiendo.</p>
+      <div class="rel-btns">
+        <button class="rel-btn" onclick="checkRel(this,false)">Composición</button>
+        <button class="rel-btn" onclick="checkRel(this,true)">Agregación</button>
+        <button class="rel-btn" onclick="checkRel(this,false)">Herencia</button>
+        <button class="rel-btn" onclick="checkRel(this,false)">Dependencia</button>
+      </div>
+      <div class="rel-explain">Agregación ◇ — Los jugadores existen de forma independiente. Rombo vacío en Equipo.</div>
+    </div>
+
+    <div class="rel-card">
+      <p><strong>3.</strong> <em>Gato</em>, <em>Perro</em> y <em>Pájaro</em> comparten atributos: nombre, edad, peso. Todos son animales.</p>
+      <div class="rel-btns">
+        <button class="rel-btn" onclick="checkRel(this,false)">Asociación</button>
+        <button class="rel-btn" onclick="checkRel(this,false)">Composición</button>
+        <button class="rel-btn" onclick="checkRel(this,true)">Herencia</button>
+        <button class="rel-btn" onclick="checkRel(this,false)">Agregación</button>
+      </div>
+      <div class="rel-explain">Herencia — Gato, Perro y Pájaro son tipos de Animal. Flecha de triángulo hueco hacia Animal.</div>
+    </div>
+
+    <div class="rel-card">
+      <p><strong>4.</strong> Un <em>Pedido</em> se hace por un <em>Cliente</em>. El cliente puede tener muchos pedidos.</p>
+      <div class="rel-btns">
+        <button class="rel-btn" onclick="checkRel(this,true)">Asociación</button>
+        <button class="rel-btn" onclick="checkRel(this,false)">Herencia</button>
+        <button class="rel-btn" onclick="checkRel(this,false)">Dependencia</button>
+        <button class="rel-btn" onclick="checkRel(this,false)">Composición</button>
+      </div>
+      <div class="rel-explain">Asociación — Relación simple entre Cliente y Pedido. Multiplicidad: Cliente 1 — 0..* Pedido.</div>
+    </div>
+
+    <div class="rel-card">
+      <p><strong>5.</strong> <em>GestorEmail</em> usa la librería externa <em>SendGrid</em> para enviar correos, pero no la almacena.</p>
+      <div class="rel-btns">
+        <button class="rel-btn" onclick="checkRel(this,false)">Asociación</button>
+        <button class="rel-btn" onclick="checkRel(this,false)">Agregación</button>
+        <button class="rel-btn" onclick="checkRel(this,false)">Composición</button>
+        <button class="rel-btn" onclick="checkRel(this,true)">Dependencia</button>
+      </div>
+      <div class="rel-explain">Dependencia — Uso temporal de una clase externa. Línea discontinua con flecha (- - →).</div>
+    </div>
+
+    <div class="rel-card">
+      <p><strong>6.</strong> Una <em>Reserva</em> genera exactamente una <em>Factura</em> al confirmarse. Sin reserva no hay factura.</p>
+      <div class="rel-btns">
+        <button class="rel-btn" onclick="checkRel(this,false)">Asociación</button>
+        <button class="rel-btn" onclick="checkRel(this,false)">Agregación</button>
+        <button class="rel-btn" onclick="checkRel(this,true)">Composición</button>
+        <button class="rel-btn" onclick="checkRel(this,false)">Herencia</button>
+      </div>
+      <div class="rel-explain">Composición ◆ — La factura no puede existir sin la reserva. Rombo relleno en Reserva. Multiplicidad 1:0..1.</div>
+    </div>
+
+    <div class="rel-card">
+      <p><strong>7.</strong> <em>AdminUsuario</em> y <em>AdminContenido</em> tienen los mismos atributos base: id, nombre, email, contraseña.</p>
+      <div class="rel-btns">
+        <button class="rel-btn" onclick="checkRel(this,false)">Asociación</button>
+        <button class="rel-btn" onclick="checkRel(this,false)">Composición</button>
+        <button class="rel-btn" onclick="checkRel(this,true)">Herencia</button>
+        <button class="rel-btn" onclick="checkRel(this,false)">Agregación</button>
+      </div>
+      <div class="rel-explain">Herencia — Crea una clase abstracta "Administrador" con los atributos comunes y ambos heredan de ella.</div>
+    </div>
+
+    <div class="rel-card">
+      <p><strong>8.</strong> Un <em>Coche</em> pertenece a una <em>Categoría</em> (Económico, SUV…). Las categorías existen aunque no haya coches.</p>
+      <div class="rel-btns">
+        <button class="rel-btn" onclick="checkRel(this,false)">Composición</button>
+        <button class="rel-btn" onclick="checkRel(this,true)">Asociación / Agregación</button>
+        <button class="rel-btn" onclick="checkRel(this,false)">Herencia</button>
+        <button class="rel-btn" onclick="checkRel(this,false)">Dependencia</button>
+      </div>
+      <div class="rel-explain">Agregación ◇ — La categoría existe independientemente del coche. Muchos coches pueden ser de la misma categoría (0..*:1).</div>
+    </div>
+  </div>
+
+  <!-- ===== B: RENTAFÁCIL ===== -->
+  <div id="sim-1" style="display:none">
+    <div class="card" style="border-left:4px solid #f9a825; margin-bottom:20px;">
+      <h3 style="color:#f9a825; margin-bottom:12px">Enunciado — RentaFácil</h3>
+      <p>Se quiere desarrollar <strong>RentaFácil</strong>, una aplicación para el alquiler de coches online.</p>
+      <br>
+      <p><strong>Tipos de usuario:</strong></p>
+      <ul style="margin:8px 0 12px 20px">
+        <li><strong>ClienteRegistrado</strong>: puede buscar coches, hacer reservas, ver su historial y valorar los coches alquilados.</li>
+        <li><strong>Administrador</strong>: puede añadir, modificar y eliminar coches del sistema, y gestionar las reservas.</li>
+      </ul>
+      <p><strong>Reglas del sistema:</strong></p>
+      <ul style="margin:8px 0 0 20px">
+        <li>Un cliente debe estar registrado para hacer una reserva.</li>
+        <li>Cada reserva pertenece a un cliente y a un coche concreto.</li>
+        <li>Una reserva puede generar, como mucho, una multa.</li>
+        <li>Los coches tienen una categoría (Económico, Familiar, SUV, Lujo).</li>
+        <li>Una categoría puede tener cero o más coches.</li>
+        <li>Un cliente puede valorar coches que haya alquilado (0 o más valoraciones).</li>
+      </ul>
+    </div>
+
+    <style>
+      .sim-step { background:#1a1a2e; border:1px solid #2a2a4e; border-radius:10px; padding:20px; margin-bottom:16px; }
+      .sim-step h4 { color:#f9a825; margin-bottom:10px; }
+      textarea.sim-area { width:100%; background:#0d0d1a; border:1px solid #2a2a4e; border-radius:6px; color:#e0e0e0; padding:12px; font-family:monospace; font-size:0.88rem; resize:vertical; min-height:80px; margin-bottom:10px; }
+      .reveal-btn { padding:9px 20px; background:#1a2a1a; border:1px solid #2d5a2d; border-radius:6px; color:#a5d6a7; cursor:pointer; font-size:0.9rem; transition:all 0.2s; }
+      .reveal-btn:hover { background:#2d5a2d; }
+      .reveal-btn.used { opacity:0.5; }
+      .solution { display:none; background:#0d0d1a; border:1px solid #2d5a2d; border-radius:8px; padding:16px; margin-top:12px; font-family:monospace; font-size:0.88rem; }
+      .solution .ok { color:#a5d6a7; }
+      .solution .attr { color:#ef9a9a; }
+      .solution .meth { color:#90caf9; }
+      .solution .rel { color:#ffcc80; }
+      .uml-diagram { display:flex; flex-wrap:wrap; gap:16px; margin-top:16px; align-items:flex-start; }
+    </style>
+
+    <div class="sim-step">
+      <h4>Paso 1 — ¿Qué clases identificas?</h4>
+      <p style="color:#aaa; font-size:0.9rem; margin-bottom:10px">Escribe los nombres de las clases que crees que hay en el sistema (busca los sustantivos).</p>
+      <textarea class="sim-area" placeholder="Ej: Usuario, Coche..."></textarea>
+      <button class="reveal-btn" onclick="reveal('sol-rentafacil-1')">Ver solución</button>
+      <div class="solution" id="sol-rentafacil-1">
+        <div class="ok">✓ 7 clases principales:</div>
+        <br>
+        <div class="ok">1. Usuario &lt;&lt;abstract&gt;&gt;</div>
+        <div class="ok">2. ClienteRegistrado</div>
+        <div class="ok">3. Administrador</div>
+        <div class="ok">4. Coche</div>
+        <div class="ok">5. Categoria</div>
+        <div class="ok">6. Reserva</div>
+        <div class="ok">7. Multa</div>
+        <div class="ok">8. Valoracion</div>
+        <br>
+        <div style="color:#888">Tip: Usuario es abstracta porque ningún usuario puede ser solo "Usuario", siempre es Cliente o Admin.</div>
+      </div>
+    </div>
+
+    <div class="sim-step">
+      <h4>Paso 2 — Atributos y métodos de cada clase</h4>
+      <p style="color:#aaa; font-size:0.9rem; margin-bottom:10px">Define los atributos (datos) y métodos (acciones) más importantes para cada clase. Usa la visibilidad correcta.</p>
+      <textarea class="sim-area" style="min-height:140px" placeholder="Ej:&#10;Coche&#10;  - id: int&#10;  - matricula: String&#10;  + getInfo(): String"></textarea>
+      <button class="reveal-btn" onclick="reveal('sol-rentafacil-2')">Ver solución</button>
+      <div class="solution" id="sol-rentafacil-2">
+        <div class="ok">Usuario &lt;&lt;abstract&gt;&gt;</div>
+        <div class="attr">  # id: int</div>
+        <div class="attr">  # nombre: String</div>
+        <div class="attr">  # email: String</div>
+        <div class="attr">  # contrasena: String</div>
+        <div class="meth">  + login(): void</div>
+        <div class="meth">  + logout(): void</div>
+        <br>
+        <div class="ok">ClienteRegistrado</div>
+        <div class="attr">  - carnetConducir: String</div>
+        <div class="attr">  - fechaRegistro: Date</div>
+        <div class="meth">  + buscarCoche(): List</div>
+        <div class="meth">  + hacerReserva(c: Coche): Reserva</div>
+        <div class="meth">  + valorarCoche(c: Coche, p: int): void</div>
+        <br>
+        <div class="ok">Administrador</div>
+        <div class="meth">  + añadirCoche(c: Coche): void</div>
+        <div class="meth">  + eliminarCoche(id: int): void</div>
+        <div class="meth">  + gestionarReservas(): void</div>
+        <br>
+        <div class="ok">Coche</div>
+        <div class="attr">  - id: int</div>
+        <div class="attr">  - matricula: String</div>
+        <div class="attr">  - marca: String</div>
+        <div class="attr">  - modelo: String</div>
+        <div class="attr">  - precioDia: float</div>
+        <div class="attr">  - disponible: boolean</div>
+        <div class="meth">  + getInfo(): String</div>
+        <br>
+        <div class="ok">Categoria</div>
+        <div class="attr">  - id: int</div>
+        <div class="attr">  - nombre: String</div>
+        <br>
+        <div class="ok">Reserva</div>
+        <div class="attr">  - id: int</div>
+        <div class="attr">  - fechaInicio: Date</div>
+        <div class="attr">  - fechaFin: Date</div>
+        <div class="attr">  - precioTotal: float</div>
+        <div class="attr">  - estado: String</div>
+        <div class="meth">  + calcularPrecio(): float</div>
+        <div class="meth">  + cancelar(): void</div>
+        <br>
+        <div class="ok">Multa</div>
+        <div class="attr">  - id: int</div>
+        <div class="attr">  - motivo: String</div>
+        <div class="attr">  - importe: float</div>
+        <div class="attr">  - fecha: Date</div>
+        <br>
+        <div class="ok">Valoracion</div>
+        <div class="attr">  - id: int</div>
+        <div class="attr">  - puntuacion: int</div>
+        <div class="attr">  - comentario: String</div>
+        <div class="attr">  - fecha: Date</div>
+      </div>
+    </div>
+
+    <div class="sim-step">
+      <h4>Paso 3 — ¿Qué relaciones hay? ¿De qué tipo?</h4>
+      <p style="color:#aaa; font-size:0.9rem; margin-bottom:10px">Describe cada relación: qué clases conecta, qué tipo es y cuál es la multiplicidad.</p>
+      <textarea class="sim-area" style="min-height:140px" placeholder="Ej:&#10;ClienteRegistrado hereda de Usuario&#10;Reserva composicion Multa (1:0..1)&#10;..."></textarea>
+      <button class="reveal-btn" onclick="reveal('sol-rentafacil-3')">Ver solución</button>
+      <div class="solution" id="sol-rentafacil-3">
+        <div class="rel">1. ClienteRegistrado ──▷ Usuario      Herencia</div>
+        <div class="rel">2. Administrador ──▷ Usuario          Herencia</div>
+        <div class="rel">3. Coche ◇── Categoria                Agregación    0..*:1</div>
+        <div class="rel">   (la categoría existe sin coches)</div>
+        <div class="rel">4. ClienteRegistrado ── Reserva        Asociación    1:0..*</div>
+        <div class="rel">5. Reserva ── Coche                   Asociación    0..*:1</div>
+        <div class="rel">6. Reserva ◆── Multa                  Composición   1:0..1</div>
+        <div class="rel">   (la multa no existe sin su reserva)</div>
+        <div class="rel">7. ClienteRegistrado ── Valoracion     Asociación    1:0..*</div>
+        <div class="rel">8. Valoracion ── Coche                Asociación    0..*:1</div>
+      </div>
+    </div>
+
+    <div class="sim-step">
+      <h4>Paso 4 — Diagrama resultado</h4>
+      <p style="color:#aaa; font-size:0.9rem; margin-bottom:10px">¿Cómo quedaría el diagrama completo?</p>
+      <button class="reveal-btn" onclick="reveal('sol-rentafacil-4')">Ver diagrama</button>
+      <div class="solution" id="sol-rentafacil-4" style="font-family:inherit">
+        <div class="uml-diagram">
+          <div class="uml-box">
+            <div class="uml-header abstract">&lt;&lt;abstract&gt;&gt; Usuario</div>
+            <div class="uml-section">
+              <div class="attr"># id: int</div>
+              <div class="attr"># nombre: String</div>
+              <div class="attr"># email: String</div>
+              <div class="attr"># contrasena: String</div>
+            </div>
+            <div class="uml-section">
+              <div class="method">+ login(): void</div>
+              <div class="method">+ logout(): void</div>
+            </div>
+          </div>
+          <div class="uml-box">
+            <div class="uml-header">ClienteRegistrado</div>
+            <div class="uml-section">
+              <div class="attr">- carnetConducir: String</div>
+              <div class="attr">- fechaRegistro: Date</div>
+            </div>
+            <div class="uml-section">
+              <div class="method">+ buscarCoche(): List</div>
+              <div class="method">+ hacerReserva(c: Coche): Reserva</div>
+              <div class="method">+ valorarCoche(c: Coche, p: int): void</div>
+            </div>
+          </div>
+          <div class="uml-box">
+            <div class="uml-header">Administrador</div>
+            <div class="uml-section" style="color:#888; font-size:0.82rem; font-style:italic">(sin atributos extra)</div>
+            <div class="uml-section">
+              <div class="method">+ añadirCoche(c: Coche): void</div>
+              <div class="method">+ eliminarCoche(id: int): void</div>
+              <div class="method">+ gestionarReservas(): void</div>
+            </div>
+          </div>
+          <div class="uml-box">
+            <div class="uml-header">Coche</div>
+            <div class="uml-section">
+              <div class="attr">- id: int</div>
+              <div class="attr">- matricula: String</div>
+              <div class="attr">- marca: String</div>
+              <div class="attr">- modelo: String</div>
+              <div class="attr">- precioDia: float</div>
+              <div class="attr">- disponible: boolean</div>
+            </div>
+            <div class="uml-section">
+              <div class="method">+ getInfo(): String</div>
+            </div>
+          </div>
+          <div class="uml-box">
+            <div class="uml-header">Categoria</div>
+            <div class="uml-section">
+              <div class="attr">- id: int</div>
+              <div class="attr">- nombre: String</div>
+            </div>
+            <div class="uml-section" style="min-height:20px"></div>
+          </div>
+          <div class="uml-box">
+            <div class="uml-header">Reserva</div>
+            <div class="uml-section">
+              <div class="attr">- id: int</div>
+              <div class="attr">- fechaInicio: Date</div>
+              <div class="attr">- fechaFin: Date</div>
+              <div class="attr">- precioTotal: float</div>
+              <div class="attr">- estado: String</div>
+            </div>
+            <div class="uml-section">
+              <div class="method">+ calcularPrecio(): float</div>
+              <div class="method">+ cancelar(): void</div>
+            </div>
+          </div>
+          <div class="uml-box">
+            <div class="uml-header">Multa</div>
+            <div class="uml-section">
+              <div class="attr">- id: int</div>
+              <div class="attr">- motivo: String</div>
+              <div class="attr">- importe: float</div>
+              <div class="attr">- fecha: Date</div>
+            </div>
+            <div class="uml-section" style="min-height:20px"></div>
+          </div>
+          <div class="uml-box">
+            <div class="uml-header">Valoracion</div>
+            <div class="uml-section">
+              <div class="attr">- id: int</div>
+              <div class="attr">- puntuacion: int</div>
+              <div class="attr">- comentario: String</div>
+              <div class="attr">- fecha: Date</div>
+            </div>
+            <div class="uml-section" style="min-height:20px"></div>
+          </div>
+        </div>
+        <div style="margin-top:20px; padding:14px; background:#16162a; border-radius:8px; font-family:monospace; font-size:0.88rem; line-height:2;">
+          <div class="rel">ClienteRegistrado ──▷ Usuario           (herencia)</div>
+          <div class="rel">Administrador ──▷ Usuario                (herencia)</div>
+          <div class="rel">Coche 0..* ◇── 1 Categoria              (agregación)</div>
+          <div class="rel">ClienteRegistrado 1 ── 0..* Reserva      (asociación)</div>
+          <div class="rel">Reserva 0..* ── 1 Coche                  (asociación)</div>
+          <div class="rel">Reserva 1 ◆── 0..1 Multa                 (composición)</div>
+          <div class="rel">ClienteRegistrado 1 ── 0..* Valoracion   (asociación)</div>
+          <div class="rel">Valoracion 0..* ── 1 Coche               (asociación)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== C: MASCOTAVET ===== -->
+  <div id="sim-2" style="display:none">
+    <div class="card" style="border-left:4px solid #f9a825; margin-bottom:20px;">
+      <h3 style="color:#f9a825; margin-bottom:12px">Enunciado — MascotaVet</h3>
+      <p>Se desea desarrollar <strong>MascotaVet</strong>, un sistema de gestión para clínicas veterinarias.</p>
+      <br>
+      <p><strong>Descripción:</strong></p>
+      <ul style="margin:8px 0 12px 20px">
+        <li>Los <strong>dueños</strong> registran sus <strong>mascotas</strong> en la clínica.</li>
+        <li>Cada mascota puede tener varias <strong>consultas</strong> a lo largo del tiempo.</li>
+        <li>En cada consulta, el <strong>veterinario</strong> puede emitir una o varias <strong>recetas</strong>.</li>
+        <li>Cada receta incluye uno o varios <strong>medicamentos</strong>.</li>
+      </ul>
+      <p><strong>Reglas:</strong></p>
+      <ul style="margin:8px 0 0 20px">
+        <li>Un dueño puede tener 0 o más mascotas.</li>
+        <li>Una mascota pertenece a exactamente 1 dueño.</li>
+        <li>Una consulta no puede existir sin la mascota a la que pertenece.</li>
+        <li>Una receta no puede existir sin la consulta en que se emitió.</li>
+        <li>Los medicamentos existen en el sistema independientemente de las recetas.</li>
+        <li>Hay dos tipos de veterinario: <strong>VeterinarioGeneral</strong> y <strong>VeterinarioEspecialista</strong>.</li>
+      </ul>
+    </div>
+
+    <div class="sim-step">
+      <h4>Paso 1 — ¿Qué clases identificas?</h4>
+      <textarea class="sim-area" placeholder="Escribe las clases..."></textarea>
+      <button class="reveal-btn" onclick="reveal('sol-vet-1')">Ver solución</button>
+      <div class="solution" id="sol-vet-1">
+        <div class="ok">1. Dueno</div>
+        <div class="ok">2. Mascota</div>
+        <div class="ok">3. Veterinario &lt;&lt;abstract&gt;&gt;</div>
+        <div class="ok">4. VeterinarioGeneral</div>
+        <div class="ok">5. VeterinarioEspecialista</div>
+        <div class="ok">6. Consulta</div>
+        <div class="ok">7. Receta</div>
+        <div class="ok">8. Medicamento</div>
+      </div>
+    </div>
+
+    <div class="sim-step">
+      <h4>Paso 2 — Atributos y métodos principales</h4>
+      <textarea class="sim-area" style="min-height:140px" placeholder="Define atributos y métodos para cada clase..."></textarea>
+      <button class="reveal-btn" onclick="reveal('sol-vet-2')">Ver solución</button>
+      <div class="solution" id="sol-vet-2">
+        <div class="ok">Dueno</div>
+        <div class="attr">  - id: int</div>
+        <div class="attr">  - nombre: String</div>
+        <div class="attr">  - telefono: String</div>
+        <div class="attr">  - email: String</div>
+        <div class="meth">  + registrarMascota(m: Mascota): void</div>
+        <br>
+        <div class="ok">Mascota</div>
+        <div class="attr">  - id: int</div>
+        <div class="attr">  - nombre: String</div>
+        <div class="attr">  - especie: String</div>
+        <div class="attr">  - raza: String</div>
+        <div class="attr">  - fechaNacimiento: Date</div>
+        <div class="meth">  + getHistorial(): List</div>
+        <br>
+        <div class="ok">Veterinario &lt;&lt;abstract&gt;&gt;</div>
+        <div class="attr">  # id: int</div>
+        <div class="attr">  # nombre: String</div>
+        <div class="attr">  # numeroColegiado: String</div>
+        <div class="meth">  + realizarConsulta(m: Mascota): Consulta</div>
+        <br>
+        <div class="ok">VeterinarioEspecialista</div>
+        <div class="attr">  - especialidad: String</div>
+        <br>
+        <div class="ok">Consulta</div>
+        <div class="attr">  - id: int</div>
+        <div class="attr">  - fecha: Date</div>
+        <div class="attr">  - diagnostico: String</div>
+        <div class="attr">  - observaciones: String</div>
+        <div class="meth">  + emitirReceta(): Receta</div>
+        <br>
+        <div class="ok">Receta</div>
+        <div class="attr">  - id: int</div>
+        <div class="attr">  - fecha: Date</div>
+        <div class="attr">  - indicaciones: String</div>
+        <br>
+        <div class="ok">Medicamento</div>
+        <div class="attr">  - id: int</div>
+        <div class="attr">  - nombre: String</div>
+        <div class="attr">  - principioActivo: String</div>
+        <div class="attr">  - dosis: String</div>
+      </div>
+    </div>
+
+    <div class="sim-step">
+      <h4>Paso 3 — Relaciones entre clases</h4>
+      <textarea class="sim-area" style="min-height:120px" placeholder="Describe las relaciones, tipo y multiplicidad..."></textarea>
+      <button class="reveal-btn" onclick="reveal('sol-vet-3')">Ver solución</button>
+      <div class="solution" id="sol-vet-3">
+        <div class="rel">1. VeterinarioGeneral ──▷ Veterinario         Herencia</div>
+        <div class="rel">2. VeterinarioEspecialista ──▷ Veterinario    Herencia</div>
+        <div class="rel">3. Dueno 1 ── 0..* Mascota                    Asociación</div>
+        <div class="rel">   (un dueño tiene 0 o más mascotas)</div>
+        <div class="rel">4. Mascota 1 ◆── 0..* Consulta                Composición</div>
+        <div class="rel">   (la consulta no existe sin la mascota)</div>
+        <div class="rel">5. Veterinario 1 ── 0..* Consulta             Asociación</div>
+        <div class="rel">   (un veterinario realiza consultas)</div>
+        <div class="rel">6. Consulta 1 ◆── 0..* Receta                 Composición</div>
+        <div class="rel">   (la receta no existe sin la consulta)</div>
+        <div class="rel">7. Receta 0..* ◇── 1..* Medicamento           Agregación</div>
+        <div class="rel">   (el medicamento existe sin la receta)</div>
+      </div>
+    </div>
+
+    <div class="sim-step">
+      <h4>Paso 4 — Diagrama resultado</h4>
+      <button class="reveal-btn" onclick="reveal('sol-vet-4')">Ver diagrama</button>
+      <div class="solution" id="sol-vet-4" style="font-family:inherit">
+        <div class="uml-diagram">
+          <div class="uml-box">
+            <div class="uml-header abstract">&lt;&lt;abstract&gt;&gt; Veterinario</div>
+            <div class="uml-section">
+              <div class="attr"># id: int</div>
+              <div class="attr"># nombre: String</div>
+              <div class="attr"># numeroColegiado: String</div>
+            </div>
+            <div class="uml-section">
+              <div class="method">+ realizarConsulta(m: Mascota): Consulta</div>
+            </div>
+          </div>
+          <div class="uml-box">
+            <div class="uml-header">VeterinarioGeneral</div>
+            <div class="uml-section" style="color:#888; font-style:italic; font-size:0.82rem">(sin atributos extra)</div>
+            <div class="uml-section" style="min-height:20px"></div>
+          </div>
+          <div class="uml-box">
+            <div class="uml-header">VeterinarioEspecialista</div>
+            <div class="uml-section">
+              <div class="attr">- especialidad: String</div>
+            </div>
+            <div class="uml-section" style="min-height:20px"></div>
+          </div>
+          <div class="uml-box">
+            <div class="uml-header">Dueno</div>
+            <div class="uml-section">
+              <div class="attr">- id: int</div>
+              <div class="attr">- nombre: String</div>
+              <div class="attr">- telefono: String</div>
+            </div>
+            <div class="uml-section">
+              <div class="method">+ registrarMascota(m: Mascota): void</div>
+            </div>
+          </div>
+          <div class="uml-box">
+            <div class="uml-header">Mascota</div>
+            <div class="uml-section">
+              <div class="attr">- id: int</div>
+              <div class="attr">- nombre: String</div>
+              <div class="attr">- especie: String</div>
+              <div class="attr">- raza: String</div>
+              <div class="attr">- fechaNacimiento: Date</div>
+            </div>
+            <div class="uml-section">
+              <div class="method">+ getHistorial(): List</div>
+            </div>
+          </div>
+          <div class="uml-box">
+            <div class="uml-header">Consulta</div>
+            <div class="uml-section">
+              <div class="attr">- id: int</div>
+              <div class="attr">- fecha: Date</div>
+              <div class="attr">- diagnostico: String</div>
+            </div>
+            <div class="uml-section">
+              <div class="method">+ emitirReceta(): Receta</div>
+            </div>
+          </div>
+          <div class="uml-box">
+            <div class="uml-header">Receta</div>
+            <div class="uml-section">
+              <div class="attr">- id: int</div>
+              <div class="attr">- fecha: Date</div>
+              <div class="attr">- indicaciones: String</div>
+            </div>
+            <div class="uml-section" style="min-height:20px"></div>
+          </div>
+          <div class="uml-box">
+            <div class="uml-header">Medicamento</div>
+            <div class="uml-section">
+              <div class="attr">- id: int</div>
+              <div class="attr">- nombre: String</div>
+              <div class="attr">- principioActivo: String</div>
+              <div class="attr">- dosis: String</div>
+            </div>
+            <div class="uml-section" style="min-height:20px"></div>
+          </div>
+        </div>
+        <div style="margin-top:20px; padding:14px; background:#16162a; border-radius:8px; font-family:monospace; font-size:0.88rem; line-height:2;">
+          <div class="rel">VeterinarioGeneral ──▷ Veterinario</div>
+          <div class="rel">VeterinarioEspecialista ──▷ Veterinario</div>
+          <div class="rel">Dueno 1 ── 0..* Mascota</div>
+          <div class="rel">Mascota 1 ◆── 0..* Consulta</div>
+          <div class="rel">Veterinario 1 ── 0..* Consulta</div>
+          <div class="rel">Consulta 1 ◆── 0..* Receta</div>
+          <div class="rel">Receta 0..* ◇── 1..* Medicamento</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== D: LEE EL DIAGRAMA ===== -->
+  <div id="sim-lee" style="display:none">
+    <h3 style="color:#f9a825; margin-bottom:16px">D. Lee este diagrama y responde</h3>
+    <p style="color:#aaa; margin-bottom:20px">Se te da un diagrama. Tienes que interpretar qué significa cada parte.</p>
+
+    <div class="card" style="margin-bottom:20px">
+      <p style="margin-bottom:14px; color:#aaa; font-size:0.9rem">Diagrama: Sistema de una biblioteca</p>
+      <div class="uml-diagram" style="pointer-events:none">
+        <div class="uml-box">
+          <div class="uml-header abstract">&lt;&lt;abstract&gt;&gt; Persona</div>
+          <div class="uml-section">
+            <div class="attr"># id: int</div>
+            <div class="attr"># nombre: String</div>
+            <div class="attr"># email: String</div>
+          </div>
+          <div class="uml-section" style="min-height:20px"></div>
+        </div>
+        <div class="uml-box">
+          <div class="uml-header">Lector</div>
+          <div class="uml-section">
+            <div class="attr">- numerCarnet: String</div>
+          </div>
+          <div class="uml-section">
+            <div class="method">+ buscarLibro(t: String): Libro</div>
+            <div class="method">+ solicitarPrestamo(l: Libro): Prestamo</div>
+          </div>
+        </div>
+        <div class="uml-box">
+          <div class="uml-header">Bibliotecario</div>
+          <div class="uml-section" style="color:#888; font-style:italic; font-size:0.82rem">(sin atributos extra)</div>
+          <div class="uml-section">
+            <div class="method">+ gestionarLibros(): void</div>
+            <div class="method">+ registrarDevolucion(p: Prestamo): void</div>
+          </div>
+        </div>
+        <div class="uml-box">
+          <div class="uml-header">Libro</div>
+          <div class="uml-section">
+            <div class="attr">- isbn: String</div>
+            <div class="attr">- titulo: String</div>
+            <div class="attr">- anioPublicacion: int</div>
+            <div class="attr">- disponible: boolean</div>
+          </div>
+          <div class="uml-section">
+            <div class="method">+ getInfo(): String</div>
+          </div>
+        </div>
+        <div class="uml-box">
+          <div class="uml-header">Autor</div>
+          <div class="uml-section">
+            <div class="attr">- id: int</div>
+            <div class="attr">- nombre: String</div>
+            <div class="attr">- nacionalidad: String</div>
+          </div>
+          <div class="uml-section" style="min-height:20px"></div>
+        </div>
+        <div class="uml-box">
+          <div class="uml-header">Prestamo</div>
+          <div class="uml-section">
+            <div class="attr">- id: int</div>
+            <div class="attr">- fechaPrestamo: Date</div>
+            <div class="attr">- fechaDevolucion: Date</div>
+          </div>
+          <div class="uml-section">
+            <div class="method">+ estaVencido(): boolean</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:16px; padding:14px; background:#16162a; border-radius:8px; font-family:monospace; font-size:0.88rem; line-height:2;">
+        <div class="rel">Lector ──▷ Persona                    (herencia)</div>
+        <div class="rel">Bibliotecario ──▷ Persona             (herencia)</div>
+        <div class="rel">Libro 0..* ◇── 1..* Autor             (agregación)</div>
+        <div class="rel">Lector 1 ◆── 0..* Prestamo            (composición)</div>
+        <div class="rel">Prestamo 0..* ── 1 Libro              (asociación)</div>
+      </div>
+    </div>
+
+    <div class="sim-step">
+      <h4>Pregunta 1 — ¿Qué tipo de relación hay entre Lector y Persona? ¿Por qué?</h4>
+      <textarea class="sim-area" placeholder="Tu respuesta..."></textarea>
+      <button class="reveal-btn" onclick="reveal('sol-lee-1')">Ver respuesta</button>
+      <div class="solution" id="sol-lee-1">
+        <div class="ok">Herencia. Lector ES UNA Persona. Lector hereda id, nombre y email de Persona. También Bibliotecario hereda de Persona.</div>
+      </div>
+    </div>
+
+    <div class="sim-step">
+      <h4>Pregunta 2 — ¿Por qué la relación entre Lector y Prestamo es composición y no asociación?</h4>
+      <textarea class="sim-area" placeholder="Tu respuesta..."></textarea>
+      <button class="reveal-btn" onclick="reveal('sol-lee-2')">Ver respuesta</button>
+      <div class="solution" id="sol-lee-2">
+        <div class="ok">Porque un Prestamo no puede existir sin el Lector que lo solicitó. Si se borra el lector, sus préstamos también desaparecen. En cambio en una asociación simple, ambos objetos podrían existir de forma independiente.</div>
+      </div>
+    </div>
+
+    <div class="sim-step">
+      <h4>Pregunta 3 — La relación Libro ◇── Autor es 0..* a 1..*. ¿Qué significa exactamente?</h4>
+      <textarea class="sim-area" placeholder="Tu respuesta..."></textarea>
+      <button class="reveal-btn" onclick="reveal('sol-lee-3')">Ver respuesta</button>
+      <div class="solution" id="sol-lee-3">
+        <div class="ok">Que un libro puede tener 1 o más autores (1..*) y un autor puede haber escrito 0 o más libros (0..*). Es agregación porque los autores existen aunque no tengan libros publicados en la biblioteca.</div>
+      </div>
+    </div>
+
+    <div class="sim-step">
+      <h4>Pregunta 4 — El atributo "disponible: boolean" de Libro, ¿debería ser público o privado? ¿Por qué?</h4>
+      <textarea class="sim-area" placeholder="Tu respuesta..."></textarea>
+      <button class="reveal-btn" onclick="reveal('sol-lee-4')">Ver respuesta</button>
+      <div class="solution" id="sol-lee-4">
+        <div class="ok">Privado (-). Los atributos siempre se declaran privados para aprovechar el encapsulamiento. Si se necesita acceder desde fuera, se hace a través de un getter público: + isDisponible(): boolean.</div>
+      </div>
+    </div>
+
+    <div class="sim-step">
+      <h4>Pregunta 5 — ¿Qué habría que añadir al diagrama para reflejar que un préstamo vencido genera una multa?</h4>
+      <textarea class="sim-area" placeholder="Tu respuesta..."></textarea>
+      <button class="reveal-btn" onclick="reveal('sol-lee-5')">Ver respuesta</button>
+      <div class="solution" id="sol-lee-5">
+        <div class="ok">Añadir una clase "Multa" con atributos como importe: float y fechaGeneracion: Date.</div>
+        <div class="ok">La relación sería: Prestamo ◆── Multa (composición 1:0..1), porque la multa no existe sin el préstamo.</div>
+        <div class="ok">El método estaVencido() de Prestamo ya existe, así que se usaría para generar la multa.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function showSim(id) {
+    document.querySelectorAll('#simulacro > div[id^="sim-"]').forEach(d => d.style.display = 'none');
+    document.getElementById(id).style.display = 'block';
+    document.querySelectorAll('#simulacro .tab').forEach(t => t.classList.remove('active'));
+    const map = {'sim-rel':'stab-rel','sim-1':'stab-1','sim-2':'stab-2','sim-lee':'stab-lee'};
+    document.getElementById(map[id]).classList.add('active');
+  }
+</script>
